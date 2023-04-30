@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="style.css">
+
+    <title>Background Remover</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light"style="background-color: #e3f2fd;" >
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">#Background_Remover</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">About</a>
+              </li>
+          
+            </ul>
+            <form class="d-flex">
+              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+          </div>
+        </div>
+      </nav>
+
+   <h1 class="text-center mt-5">Choose a Image to remove Background</h1>
+    <div class="container" style="
+    margin: 8rem 15rem;">
+        <div class="row">
+            <div class="col-md-12">
+                <form action="">
+                    <div class="form-group" >
+                        <label for="filepicker" class="h3">Select jpg File:</label>
+                        <input type="file" id="filepicker" class="form-control">
+                    </div>
+                    <div>
+                    <button onclick="handleUpload()" type="button" class="btn btn-primary mt-3" id="btn">Upload</button>
+            
+                </form>
+                <button class="btn btn-success mt-3 mx-2"  onclick="downloadFile()">Download</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+<script>
+    let imageURL;
+    function handleUpload(){
+        // console.log("Clicked");
+        const fileInput = document.getElementById('filepicker');
+        const image = fileInput.files[0];
+
+        const formData = new FormData();
+        formData.append("image_file",image); //append is used for concatinate
+        formData.append('size','auto');
+
+        const apiKey = "mMA8XZKxY5wcHbRHNN2b361f";
+        fetch('https://api.remove.bg/v1.0/removebg',{
+            method:"POST",
+            headers:{
+                'X-Api-Key': apiKey,
+            },
+            body:formData
+        })
+        .then(function(response){
+            return response.blob();
+        })
+        .then(function(blob){
+            console.log(blob);
+            const url = URL.createObjectURL(blob);
+            imageURL = url;
+            const img = document.createElement('img'); //For making a img tag
+            img.src = url;
+            document.body.appendChild(img);
+
+        })
+        .catch()
+    }
+
+    function downloadFile(){
+            let anchorElement = document.createElement('a');
+            anchorElement.href = imageURL;
+            anchorElement.download = 'no-bg.png';
+            document.body.appendChild(anchorElement);
+
+            anchorElement.click();
+            document.body.removeChild(a);
+    }
+</script>
+  </body>
+</html>
